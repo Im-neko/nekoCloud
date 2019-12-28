@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  mariadb:
+    container_name: owncloud-mariadb
+    image: mariadb:10.1.21
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: $MYSQL_PASS
+    restart: always
+
+  owncloud:
+    container_name: owncloud
+    image: owncloud:latest
+    links:
+      - mariadb:mariadb
+    volumes:
+      - owncloud-data:/var/www/html
+      - /house:/house
+    depends_on:
+      - mariadb
+    restart: always
+
+volumes:
+  mariadb-data:
+    driver: local
+  owncloud-data:
+    driver: local
