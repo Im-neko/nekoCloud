@@ -2,27 +2,20 @@ version: '3'
 
 services:
   mariadb:
-    container_name: owncloud-mariadb
     image: mariadb:10.1.21
     volumes:
       - mariadb-data:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASS
-      MYSQL_DATABASE: $MYSQL_DB
-      MYSQL_USER: $MYSQL_USER
-      MYSQL_PASSWORD: $MYSQL_PASS
     restart: always
 
   owncloud:
-    container_name: owncloud
-    image: owncloud:latest
+    image: owncloud:10.0.3
     links:
-      - mariadb:mariadb
+      - mariadb
     volumes:
       - owncloud-data:/var/www/html
       - /house:/house
-    depends_on:
-      - mariadb
     ports:
       - "19025:80"
     restart: always
