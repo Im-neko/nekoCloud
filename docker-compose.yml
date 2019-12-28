@@ -8,8 +8,6 @@ services:
       - mariadb-data:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: $MYSQL_PASS
-    ports:
-      - "19025:80"
     restart: always
 
   owncloud:
@@ -22,6 +20,8 @@ services:
       - /house:/house
     depends_on:
       - mariadb
+    ports:
+      - "19025:80"
     restart: always
 
 volumes:
