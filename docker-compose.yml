@@ -10,7 +10,9 @@ services:
     restart: always
 
   owncloud:
-    image: owncloud:10.0.3
+    build:
+      context: .
+      dockerfile: owncloud/Dockerfile
     links:
       - mariadb
     volumes:
