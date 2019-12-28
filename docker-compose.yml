@@ -8,6 +8,8 @@ services:
       - mariadb-data:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: $MYSQL_PASS
+    ports:
+      - "19025:80"
     restart: always
 
   owncloud:
