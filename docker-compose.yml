@@ -1,29 +1,52 @@
 version: '3'
 
 services:
-  mariadb:
-    image: mariadb:10.1.21
-    volumes:
-      - mariadb-data:/var/lib/mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASS
-    restart: always
-
   owncloud:
-    build:
-      context: .
-      dockerfile: owncloud/Dockerfile
+    image: owncloud/server:10.3.0
     links:
       - mariadb
-    volumes:
-      - owncloud-data:/var/www/html
-      - /house:/house
+      - redis
+    environment:
+      OWNCLOUD_DOMAIN: $DOMAIN
+      OWNCLOUD_DB_TYPE: mysql
+      OWNCLOUD_DB_NAME: $DB_NAME
+      OWNCLOUD_DB_USERNAME: $DB_USER
+      OWNCLOUD_DB_PASSWORD: $DB_PASS
+      OWNCLOUD_DB_HOST: mariadb
+      OWNCLOUD_ADMIN_USERNAME: $ADMIN_USER
+      OWNCLOUD_ADMIN_PASSWORD: $ADMIN_PASS
+      OWNCLOUD_MYSQL_UTF8MB4: 'true'
+      OWNCLOUD_REDIS_ENABLED: 'true'
+      OWNCLOUD_REDIS_HOST: redis
     ports:
-      - "19025:80"
+      - "19025:8080"
+    volumes:
+      - owncloud-data:/mnt/data
     restart: always
+
+  mariadb:
+    image: webhippie/mariadb:latest
+    environment:
+      MARIADB_ROOT_PASSWORD: $DB_ROOT_PASS
+      MARIADB_USERNAME: $DB_USER
+      MARIADB_PASSWORD: $DB_PASS
+      MARIADB_DATABASE: $DB_NAME
+      MARIADB_MAX_ALLOWED_PACKET: 128M
+      MARIADB_INNODB_LOG_FILE_SIZE: 64M
+    restart: always
+
+  redis:
+    image: webhippie/redis:latest
+    restart: always
+    environment:
+      - REDIS_DATABASES=1
+    volumes:
+      - redis-data:/var/www/html
 
 volumes:
   mariadb-data:
     driver: local
   owncloud-data:
+    driver: local
+  redis-data:
     driver: local

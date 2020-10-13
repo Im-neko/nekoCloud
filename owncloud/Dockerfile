@@ -1,2 +1,2 @@
-FROM owncloud:10.0.3
-RUN apt-get update && apt-get install -y smbclient && rm -rf /var/lib/apt/lists/*
+FROM owncloud/alpine:3.10
+RUN apk add --no-cache samba-client
